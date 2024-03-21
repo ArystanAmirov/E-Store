@@ -1,0 +1,80 @@
+﻿@model List<Order>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-2">
+        <p>
+            <h4>Orders</h4>
+        </p>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Order ID</th>
+                    <th style="text-align: center;">Items</th>
+                    <th style="text-align: center;">Total</th>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <th style="text-align: center;">User</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    @if (User.Identity.IsAuthenticated && order.OrderItems.Count > 0 && (User.IsInRole("Admin") || (User.IsInRole("User") || User.Identity.Name == order.User.FullName)))
+                    {
+                        <tr>
+                            <td class="align-content-lg-start">
+                                <ul style="list-style-type:none">
+                                    <li>
+                                        <div class="alert alert-info" role="alert">
+                                            @order.Id
+                                        </div>
+                                    </li>
+                                </ul>
+                            </td>
+
+                            <td class="align-middle">
+                                <ul style="list-style-type:none">
+                                    @foreach (var item in order.OrderItems)
+                                    {
+                                        <li>
+                                            <div class="alert alert-info" role="alert">
+                                                <span class="badge bg-success">@item.Amount</span> [@item.Price.ToString("c")] - @item.Phone.Name
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </td>
+                            <td class="align-content-lg-start">
+                                <ul style="list-style-type:none">
+                                    <li>
+                                        <div class="alert alert-info" role="alert">
+                                            @order.OrderItems.Select(m => m.Phone.Price * m.Amount).Sum().ToString("c")
+                                        </div>
+                                    </li>
+                                </ul>
+                            </td>
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+                                <td class="align-content-lg-start">
+                                    <ul style="list-style-type:none">
+                                        <li>
+                                            <div class="alert alert-info" role="alert">
+                                                @order.User.FullName
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

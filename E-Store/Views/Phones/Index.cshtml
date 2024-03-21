@@ -1,0 +1,96 @@
+﻿@model IEnumerable<Phone>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 col-xs-6 border-primary mb-3">
+            <div class="card mb-3" style="max-width: 540px; height: 370px;">
+                <div class="row g-0">
+                    <div class="col-md-12">
+                        <div class="card-header text-white bg-primary">
+                            <h6 class="card-title" style="margin-bottom: -2px;">
+                                    @item.Name
+                                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                                    {
+                                        <a class="text-white float-right" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i></a>
+                                        <a class="text-white float-right mr-3" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
+                                    }
+                             </h6>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div style="width: 200px; height: 200px; overflow: hidden">
+                            <img src="@item.ImageURL" style="width: auto; height: 80%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" alt="@item.Name">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card-body" style="height: 270px;">
+                            <div class="overflow-container" style="height: 110px; padding: 5px; margin-bottom: 5px">
+                                <div class="overflow-content" style="max-height: 100%; width: 200px;">
+                                    <style>
+                                        .card-text.description {
+                                            display: -webkit-box;
+                                            -webkit-line-clamp: 4;
+                                            -webkit-box-orient: vertical;
+                                            overflow: hidden;
+                                            text-overflow: ellipsis;
+                                            margin-bottom: 0;
+                                        }
+                                    </style>
+                                    <p class="card-text description"><b>Description: <br></b>@item.Description</p>
+                                </div>
+                            </div>
+
+
+                            <div class="overflow-container" style="height: 60px; padding: 5px; margin-bottom: 5px;">
+                                <div class="overflow-content" style="max-height: 100%; width: 200px;">
+                                    <style>
+                                        .card-text.cpu {
+                                            display: -webkit-box;
+                                            -webkit-line-clamp: 2;
+                                            -webkit-box-orient: vertical;
+                                            overflow: hidden;
+                                            text-overflow: ellipsis;
+                                            margin-bottom: 0;
+                                        }
+                                    </style>
+                                    <p class="card-text cpu"><b>CPU: <br></b>@item.CPU.Name</p>
+                                </div>
+                            </div>
+
+
+                            <div class="overflow-container" style="height: 60px; overflow-y: auto; padding: 5px; margin-bottom: 5px;">
+                                <div class="overflow-content" style="max-height: 100%;">
+                                    <p class="card-text"><b>Colour: <br></b>@item.PhoneColour</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="card-footer" style="background-color: white; padding: 0.5rem">
+                            <p class="card-text">
+                                @if (!User.IsInRole("Admin"))
+                                {
+                                    <a class="btn btn-warning text-white float-right"
+                                       asp-controller="Orders"
+                                       asp-action="AddItemToShoppingCart"
+                                       asp-route-id="@item.Id">
+                                        <i class="bi bi-cart-plus"></i> <strong>Add to Cart (Price @item.Price.ToString("c"))</strong>
+                                    </a>
+                                }
+
+                                <a class="btn btn-outline-primary float-left" asp-action="Details" asp-route-id="@item.Id">
+                                    <i class="bi bi-eye-fill"></i> Details
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@await Html.PartialAsync("_CreateItem", "Phones") 
