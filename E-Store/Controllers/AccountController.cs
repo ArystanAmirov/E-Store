@@ -77,7 +77,7 @@ namespace E_Store.Controllers
             var user = await _userManager.FindByNameAsync(registerVM.UserName);
             if(user != null)
             {
-                TempData["Error"] = "This email address is already in use";
+                TempData["Error"] = "This user is already in use";
                 return View(registerVM);
             }
 
@@ -90,10 +90,19 @@ namespace E_Store.Controllers
             var newUserResponse = await _userManager.CreateAsync(newUser, registerVM.Password);
 
             if (newUserResponse.Succeeded)
+            {
                 await _userManager.AddToRoleAsync(newUser, UserRoles.User);
-
-            return View("RegisterCompleted");
-        }
+                return View("RegisterCompleted");
+            }
+			else
+			{
+				foreach (var error in newUserResponse.Errors)
+				{
+					ModelState.AddModelError("", error.Description);
+				}
+				return View(registerVM);
+			}
+		}
 
 
         [HttpPost]

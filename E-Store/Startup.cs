@@ -51,7 +51,16 @@ namespace E_Store
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = false; // Allow multiple users with the same email
-            }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+				options.Password.RequiredLength = 1;
+				options.Password.RequireNonAlphanumeric = false;
+				options.Password.RequireNonAlphanumeric = false;
+				options.Password.RequireDigit = false;
+				options.Password.RequireUppercase = false;
+				options.Password.RequireLowercase = false;
+
+
+
+			}).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
             services.AddMemoryCache();
             services.AddSession();
             services.AddControllersWithViews();
